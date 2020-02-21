@@ -12,14 +12,10 @@ axios.interceptors.request.use(function (config) {
   // 在发送请求之前做些什么，添加公共前缀，自动添加sessionid
   let sessionId = store.state.sessionId;
   if (config.method == 'post') {
-    if (sessionId) {
-      config.data.sessionId = sessionId;
-    }
-    config.url = "/attendance" + config.url
+   
+
   } else if (config.method == 'get') {
-    if (sessionId) {
-      config.url = "/attendance" + config.url + '?sessionId=' + sessionId
-    }
+
   }
 
   // 添加loading

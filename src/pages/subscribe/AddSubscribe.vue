@@ -151,6 +151,9 @@
       },
       submit(){
         if (!this.subInfo.name) {
+          this.$http.post("/useratd/getAtdRecordNum", {"data":"data"}).then(function (data) {
+            alert(data);
+          });
           // this.$createDialog({type: 'alert', title: '提示', content: '补卡申请已经审核过了'}).show()
           this.$createToast({txt: '请填写您的姓名', type: 'text'}).show()
          // this.$createToast({txt: '请填写您的姓名', type: 'loading'}).show()
