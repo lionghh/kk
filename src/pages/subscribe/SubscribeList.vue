@@ -27,8 +27,8 @@
                           <img src="../../assets/temp/1.png" alt="">
                         </div>
                         <div class="iui-list-item-title">
-                          <span class="sub-username">{{item.username}}</span>
-                          <span class="sub-userphone">{{item.userphone}}</span>
+                          <span class="sub-username">{{item.realName}}</span>
+                          <span class="sub-userphone">{{item.realPhone}}</span>
                         </div>
                         <div class="iui-list-item-after">
                           <span class="sub-state"
@@ -43,19 +43,19 @@
                           </li>
                           <li class="">
                             <span class="sub-label">预约网点：</span>
-                            <span class="sub-text">{{item.address}}</span>
+                            <span class="sub-text">{{item.reservationBranch}}</span>
                           </li>
                           <li class="">
                             <span class="sub-label">预约办理时间：</span>
-                            <span class="sub-text">{{item.subtime}}</span>
+                            <span class="sub-text">{{item.reservationTime}}</span>
                           </li>
                           <li class="">
                             <span class="sub-label">预约提交时间：</span>
-                            <span class="sub-text">{{item.submittime}}</span>
+                            <span class="sub-text">{{item.createTime}}</span>
                           </li>
                           <li class="">
                             <span class="sub-label">预约留言：</span>
-                            <span class="sub-text">{{item.note}}</span>
+                            <span class="sub-text">{{item.remark}}</span>
                           </li>
                         </ul>
                       </div>
@@ -118,6 +118,7 @@
     props: {},
     data: function () {
       return {
+        openId:'',
         items: [],
         stateInfo: {
           1: {cname: 'iui-txt-primary', text: '待受理'},
@@ -135,6 +136,12 @@
         }
       }
     },
+    mounted () {
+      console.log(33333333)
+      this.openId = this.$route.query.openId
+      this.getMyList()
+      console.log(1111)
+    },
     computed: {
       options: function () {
         return {
@@ -149,8 +156,22 @@
           }
         }
       }
-    },
+    },    
     methods: {
+      getMyList:function(){
+        let url = "http://watuji111.natapp4.cc/renren-fast/generator/reservation/listAll";
+        this.$http({
+          url: url,
+          method: 'get',
+          params: {'openId':this.openId}
+        }).then((res)=> {          
+          if (res && res.code === 0) {
+            this.items = res.list
+          }else{
+            //console.log(1111)
+          }
+        })
+      },
       toAdd(){
         this.$router.push({name: 'AddSubscribe'})
       },

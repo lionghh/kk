@@ -19,7 +19,7 @@
               您的姓名<span class="list-form-required">*</span>
             </div>
             <div class="list-form-input-wrap">
-              <input class="list-form-input" type="text" placeholder="请输入您的姓名" v-model="subInfo.name">
+              <input class="list-form-input" type="text" placeholder="请输入您的姓名" v-model="subInfo.realName">
             </div>
           </div>
           <div class="list-form-row">
@@ -27,7 +27,7 @@
               您的电话<span class="list-form-required">*</span>
             </div>
             <div class="list-form-input-wrap">
-              <input class="list-form-input" type="text" placeholder="请输入您的电话" v-model="subInfo.phone">
+              <input class="list-form-input" type="text" placeholder="请输入您的电话" v-model="subInfo.realPhone">
             </div>
           </div>
           <div class="list-form-row">
@@ -43,7 +43,7 @@
               预约办理时间<span class="list-form-required">*</span>
             </div>
             <div class="list-form-input-wrap">
-              <input class="list-form-input" type="text" placeholder="请输预约办理时间" v-model="subInfo.date" readonly
+              <input class="list-form-input" type="text" placeholder="请输预约办理时间" v-model="subInfo.reservationTime" readonly
                      @click="showDatePicker">
             </div>
           </div>
@@ -52,14 +52,14 @@
               预约办理网点<span class="list-form-required">*</span>
             </div>
             <div class="list-form-input-wrap">
-              <input class="list-form-input" type="text" placeholder="请输入预约办理网点" v-model="subInfo.address" readonly
+              <input class="list-form-input" type="text" placeholder="请输入预约办理网点" v-model="subInfo.reservationBranch" readonly
                      @click="showAddressPicker">
             </div>
           </div>
 
           <div class="list-form-row">
             <div class="list-form-input-wrap">
-              <textarea class="list-form-textarea" placeholder="您需要的其他金融服务请留言!" v-model="subInfo.note"></textarea>
+              <textarea class="list-form-textarea" placeholder="您需要的其他金融服务请留言!" v-model="subInfo.remark"></textarea>
               <div class="list-form-input-tips">*限800字</div>
             </div>
           </div>
@@ -81,6 +81,7 @@
   </div>
 </template>
 <script>
+  import axios from 'axios'
   function formatDate(date) {
     if (date) {
       let y = date.getFullYear();
@@ -103,20 +104,75 @@
 
   export default {
     props: {},
-    data: function () {
+    data() {
       return {
+        test:10,
         subInfo: {
-          name: '',
-          phone: '',
+          openId:'',
+          realName: '',
+          realPhone: '',
           business: '',
-          date: '',
-          address: "",
-          note: ''
+          reservationTime: '',
+          reservationBranch: "",
+          remark: ''
+        },
+        wxUrl:'',
+        wxInfo:{
+          openId: '',
+          nickname: '',
+          sexDesc: '',
+          sex: '',
+          language: '',
+          city: '',
+          province: '',
+          country: '',
+          headImgUrl: '',
+          privileges: ''
         }
       }
     },
+    mounted () {
+      //this.getWxUrl();
+      console.log(this.$route.query)
+      this.subInfo.openId = this.$route.query.openId
+      this.wxInfo.openId = this.$route.query.openId
+      this.wxInfo.nickname = this.$route.query.nickname
+      this.wxInfo.headImgUrl = this.$route.query.headImgUrl
+      console.log(this.wxInfo)
+    },
     computed: {},
     methods: {
+      getWxUrl:function(){
+        //console.log(window.location.href)
+        this.$http({
+          // url: "https://zzttt.xyz/renren-fast/generator/reservation/wx/wxurl/wxa548cb4128d6400b",
+          // method: 'get',
+          // params: {'redirectUrl':'https://zzttt.xyz/renren-fast/'}
+          url: "http://watuji111.natapp4.cc/renren-fast/generator/reservation/wx/wxurl/wx2ad03fd034a898d8",
+          method: 'get',
+          params: {'redirectUrl':'http://watuji111.natapp4.cc/renren-fast/generator/reservation//wx/wxlogin/wx2ad03fd034a898d8'}
+        }).then((res)=> {          
+          if (res && res.code === 0) {
+
+          }else{
+            //console.log(1111)
+          }
+        })
+      },
+      getWxInfo:function(){
+        this.$http({
+          url: this.wxUrl,
+          method: 'get',
+          params: ''//this.$http.adornParams()
+        }).then((res)=> {
+          //console.log(data)
+          if (res && res.code === 0) {            
+            console.log(res)
+          }else{
+            
+          }
+        })
+      },
       pageBack(){
         this.$router.back()
       },
@@ -143,21 +199,43 @@
             title: '选择预约网点',
             data: [data],
             onSelect: function (value, index, text) {
-              self.subInfo.address = text
+              self.subInfo.reservationBranch = text
             }
           })
         }
         this.addressPicker.show()
       },
       submit(){
-        if (!this.subInfo.name) {
-          this.$http.post("http://www.baidu.com/useratd/getAtdRecordNum", {"data":"data"}).then(function (data) {
-            alert(data);
+        console.log(this.subInfo.reservationBranch.toString())
+        if (!this.subInfo.realName) {
+          let url = "http://watuji111.natapp4.cc/renren-fast/generator/reservation/save"
+          this.$http.post(
+            url, 
+            {
+              'openId':this.subInfo.openId,
+              'realName': this.subInfo.realName,
+              'realPhone': this.subInfo.realPhone,
+              'business': this.subInfo.business,
+              'reservationTime': this.subInfo.reservationTime.toString(),
+              'reservationBranch': this.subInfo.reservationBranch.toString(),
+              'remark': this.subInfo.remark
+            }
+            ).then((res)=> {
+              console.log(res);
+              if (res && res.code === 0) {
+                this.$router.push({
+                path: '/SubscribeList?openId=' + this.subInfo.openId,
+              })
+              }else{
+                
+              }              
           });
+
+
           // this.$createDialog({type: 'alert', title: '提示', content: '补卡申请已经审核过了'}).show()
           // this.$createToast({txt: '请填写您的姓名', type: 'text'}).show()
          // this.$createToast({txt: '请填写您的姓名', type: 'loading'}).show()
-          // this.$router.push({name: 'SubscribeList'})
+          // this.$router.push({name: 'SubscribeList'})          
         }
       },
       toList(){
