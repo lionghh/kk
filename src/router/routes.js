@@ -5,6 +5,8 @@ import  Error from '../pages/Error.vue'
 // 预约
 import SubscribeList from '../pages/subscribe/SubscribeList.vue'
 import AddSubscribe from '../pages/subscribe/AddSubscribe.vue'
+import SubscribeDetail from '../pages/subscribe/SubscribeDetail.vue'
+import SubscribeEdit from '../pages/subscribe/SubscribeEdit.vue'
 
 
 // meta设置页面是否缓存
@@ -20,6 +22,14 @@ export default [
     path: '/',
     name: 'AddSubscribe',
     component: AddSubscribe
+  },{
+    path: '/SubscribeDetail',
+    name: 'SubscribeDetail',
+    component: SubscribeDetail
+  },{
+    path: '/SubscribeEdit',
+    name: 'SubscribeEdit',
+    component: SubscribeEdit
   },{
     path: '/error',
     name: 'Error',

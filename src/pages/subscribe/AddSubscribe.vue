@@ -74,7 +74,7 @@
 
       </div>
     </div>
-    <div class="to-sub-history">
+    <div class="to-sub-history" @click="toList">
       <i class="mdi mdi-history"></i>
       往期记录
     </div>
@@ -151,13 +151,17 @@
       },
       submit(){
         if (!this.subInfo.name) {
-          this.$http.post("/useratd/getAtdRecordNum", {"data":"data"}).then(function (data) {
+          this.$http.post("http://www.baidu.com/useratd/getAtdRecordNum", {"data":"data"}).then(function (data) {
             alert(data);
           });
           // this.$createDialog({type: 'alert', title: '提示', content: '补卡申请已经审核过了'}).show()
-          this.$createToast({txt: '请填写您的姓名', type: 'text'}).show()
+          // this.$createToast({txt: '请填写您的姓名', type: 'text'}).show()
          // this.$createToast({txt: '请填写您的姓名', type: 'loading'}).show()
+          // this.$router.push({name: 'SubscribeList'})
         }
+      },
+      toList(){
+        this.$router.push({name: 'SubscribeList'})
       }
     },
     created: function () {
