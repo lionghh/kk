@@ -5,9 +5,9 @@
         <div class="sub-banner">
           <ul>
             <li>
-              <img src="../../assets/img/sub-banner.png" alt="">
+              <img src="../../assets/img/1.jpg" alt="">
               <div class="banner-desc">
-                浏阳XX银行—建设有温度的百姓银行
+                宁乡农商银行—建设有温度的百姓银行
               </div>
             </li>
           </ul>
@@ -80,7 +80,7 @@
     </div>
   </div>
 </template>
-<script>
+<script type="text/ecmascript-6">
   import axios from 'axios'
   function formatDate(date) {
     if (date) {
@@ -132,7 +132,7 @@
       }
     },
     mounted () {
-      //this.getWxUrl();
+      this.isWeixinBrowser();
       console.log(this.$route.query)
       this.subInfo.openId = this.$route.query.openId
       this.wxInfo.openId = this.$route.query.openId
@@ -142,6 +142,18 @@
     },
     computed: {},
     methods: {
+      //判断是否微信浏览器
+      isWeixinBrowser: function () {  
+          var ua = navigator.userAgent.toLowerCase();  
+          var result = (/micromessenger/.test(ua)) ? true : false;
+          if (result) {
+              console.log('你正在访问微信浏览器');
+          }
+          else {
+              console.log('你访问的不是微信浏览器');
+          }
+          return result;
+      },  
       getWxUrl:function(){
         //console.log(window.location.href)
         this.$http({
@@ -184,7 +196,7 @@
             value: new Date(),
             columnCount: 6,
             onSelect: function (date) {
-              self.subInfo.date = formatDate(date)
+              self.subInfo.reservationTime = formatDate(date)
             }
           })
         }
@@ -207,12 +219,15 @@
       },
       submit(){
         console.log(this.subInfo.reservationBranch.toString())
-        if (!this.subInfo.realName) {
+        if (this.subInfo.realName && this.subInfo.realName !='' && this.subInfo.realName.trim != '') {
+          //测试服务号
           let url = "http://watuji111.natapp4.cc/renren-fast/generator/reservation/save"
+          //延阳服务号
+          //let url = "https://zzttt.xyz/renren-fast/generator/reservation/save"
           this.$http.post(
             url, 
             {
-              'openId':this.subInfo.openId,
+              'wxuserId':this.subInfo.openId,
               'realName': this.subInfo.realName,
               'realPhone': this.subInfo.realPhone,
               'business': this.subInfo.business,
@@ -236,6 +251,8 @@
           // this.$createToast({txt: '请填写您的姓名', type: 'text'}).show()
          // this.$createToast({txt: '请填写您的姓名', type: 'loading'}).show()
           // this.$router.push({name: 'SubscribeList'})          
+        }else{
+          alert('请输入预约信息！')
         }
       },
       toList(){

@@ -113,7 +113,7 @@
     </div>
   </div>
 </template>
-<script>
+<script type="text/ecmascript-6">
   export default {
     props: {},
     data: function () {
@@ -136,12 +136,6 @@
         }
       }
     },
-    mounted () {
-      console.log(33333333)
-      this.openId = this.$route.query.openId
-      this.getMyList()
-      console.log(1111)
-    },
     computed: {
       options: function () {
         return {
@@ -159,12 +153,16 @@
     },    
     methods: {
       getMyList:function(){
+        //测试服务号
         let url = "http://watuji111.natapp4.cc/renren-fast/generator/reservation/listAll";
+        //延阳服务号
+        //let url = "https://zzttt.xyz/renren-fast/generator/reservation/listAll";
         this.$http({
           url: url,
           method: 'get',
           params: {'openId':this.openId}
-        }).then((res)=> {          
+        }).then((res)=> {   
+          console.log(res)       
           if (res && res.code === 0) {
             this.items = res.list
           }else{
@@ -242,43 +240,47 @@
       getData(url, params){  // 模拟请求得到数据
         return new Promise(function (res, rej) {
           setTimeout(function () {
-            var data = [{
-              username: '凯凯',
-              userphone: '13112341234',
+            var data = [
+            {
+              realName: '渰',
+              realPhone: '13112341234',
               business: '开户',
-              address: '总部',
-              subtime: '星期天',
-              submittime: '提交时间',
-              note: '没有留言啊',
+              reservationBranch: '总部',
+              reservationTime: '星期天',
+              createTime: '提交时间',
+              remark: '没有留言啊',
               state: 1
             }, {
-              username: '凯凯',
-              userphone: '13112341234',
+              realName: '渰',
+              realPhone: '13112341234',
               business: '开户',
-              address: '总部',
-              subtime: '2020-02-12 12:00',
-              submittime: '2020-02-12 12:00',
-              note: '没有留言啊',
+              reservationBranch: '总部',
+              reservationTime: '星期天',
+              createTime: '提交时间',
+              remark: '没有留言啊',
               state: 2
             }, {
-              username: '凯凯',
-              userphone: '13112341234',
+              realName: '渰',
+              realPhone: '13112341234',
               business: '开户',
-              address: '总部',
-              subtime: '星期天',
-              submittime: '提交时间',
-              note: '没有留言啊',
+              reservationBranch: '总部',
+              reservationTime: '星期天',
+              createTime: '提交时间',
+              remark: '没有留言啊',
               state: 3
-            }, {
-              username: '凯凯',
-              userphone: '13112341234',
+            }, 
+            {
+              realName: '渰',
+              realPhone: '13112341234',
               business: '开户',
-              address: '总部',
-              subtime: '星期天',
-              submittime: '提交时间',
-              note: '没有留言啊',
+              reservationBranch: '总部',
+              reservationTime: '星期天',
+              createTime: '提交时间',
+              remark: '没有留言啊',
               state: 4
             }];
+            var data = this.items;
+            console.log(this.items)
             if (params.pageNum == 2) { // 假设第3页没数据了
               data = [];
             }
@@ -287,8 +289,12 @@
         });
       }
     },
-    mounted(){
-      this.getApplyList(0)
+    mounted(){      
+      // this.openId = this.$route.query.openId
+      // console.log(this.openId )
+      // this.getMyList()
+      // console.log(this.items)
+      this.getApplyList(0)      
     }
   }
 </script>
