@@ -60,7 +60,7 @@
           <div class="list-form-row">
             <div class="list-form-input-wrap">
               <textarea class="list-form-textarea" placeholder="您需要的其他金融服务请留言!" v-model="subInfo.remark"></textarea>
-              <div class="list-form-input-tips">*限800字</div>
+              <div class="list-form-input-tips">*限50字</div>
             </div>
           </div>
 
@@ -82,6 +82,7 @@
 </template>
 <script type="text/ecmascript-6">
   import axios from 'axios'
+  import VueCookies from 'vue-cookies'
   function formatDate(date) {
     if (date) {
       let y = date.getFullYear();
@@ -107,7 +108,7 @@
     data() {
       return {
         test:10,
-        subInfo: {
+        subInfo: {          
           openId:'',
           realName: '',
           realPhone: '',
@@ -133,6 +134,9 @@
     },
     mounted () {
       this.isWeixinBrowser();
+      $cookies.set('openId', this.$route.query.openId)
+      $cookies.set('nickname', this.$route.query.nickname)
+      $cookies.set('headImgUrl', this.$route.query.headImgUrl)
       console.log(this.$route.query)
       this.subInfo.openId = this.$route.query.openId
       this.wxInfo.openId = this.$route.query.openId
@@ -218,12 +222,13 @@
         this.addressPicker.show()
       },
       submit(){
-        console.log(this.subInfo.reservationBranch.toString())
+        //console.log(this.subInfo)      
+        //return  
         if (this.subInfo.realName && this.subInfo.realName !='' && this.subInfo.realName.trim != '') {
           //测试服务号
-          let url = "http://watuji111.natapp4.cc/renren-fast/generator/reservation/save"
+          //let url = "http://watuji111.natapp4.cc/renren-fast/generator/reservation/save"
           //延阳服务号
-          //let url = "https://zzttt.xyz/renren-fast/generator/reservation/save"
+          let url = "https://zzttt.xyz/renren-fast/generator/reservation/save"
           this.$http.post(
             url, 
             {
@@ -236,27 +241,21 @@
               'remark': this.subInfo.remark
             }
             ).then((res)=> {
-              console.log(res);
+              //console.log(res);
               if (res && res.code === 0) {
                 this.$router.push({
-                path: '/SubscribeList?openId=' + this.subInfo.openId,
-              })
+                  path: '/SubscribeList', query: this.$route.query
+                })
               }else{
-                
+                alert('服务器繁忙，请稍后再试!')
               }              
-          });
-
-
-          // this.$createDialog({type: 'alert', title: '提示', content: '补卡申请已经审核过了'}).show()
-          // this.$createToast({txt: '请填写您的姓名', type: 'text'}).show()
-         // this.$createToast({txt: '请填写您的姓名', type: 'loading'}).show()
-          // this.$router.push({name: 'SubscribeList'})          
+          });        
         }else{
           alert('请输入预约信息！')
         }
       },
       toList(){
-        this.$router.push({name: 'SubscribeList'})
+        this.$router.push({name: 'SubscribeList', query: this.$route.query})
       }
     },
     created: function () {

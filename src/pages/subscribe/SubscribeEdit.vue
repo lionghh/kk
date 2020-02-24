@@ -21,7 +21,7 @@
                     您的姓名<span class="input-required">*</span>
                   </div>
                   <div class="iui-list-item-input-wrap">
-                    <input class="iui-list-item-input" type="text" value="光头强" placeholder="请输入您的姓名">
+                    <input class="iui-list-item-input" type="text" v-model="subInfo.realName" placeholder="请输入您的姓名">
                   </div>
                 </div>
               </li>
@@ -31,7 +31,7 @@
                     您的电话<span class="input-required">*</span>
                   </div>
                   <div class="iui-list-item-input-wrap">
-                    <input class="iui-list-item-input" type="text" value="13112341234" placeholder="请输入您的电话">
+                    <input class="iui-list-item-input" type="text" v-model="subInfo.realPhone" placeholder="请输入您的电话">
                   </div>
                 </div>
               </li>
@@ -41,7 +41,7 @@
                     预约业务<span class="input-required">*</span>
                   </div>
                   <div class="iui-list-item-input-wrap">
-                    <input class="iui-list-item-input" type="text" value="开户" placeholder="请输入预约业务">
+                    <input class="iui-list-item-input" type="text" v-model="subInfo.business" placeholder="请输入预约业务">
                   </div>
                 </div>
               </li>
@@ -51,7 +51,7 @@
                     预约办理时间<span class="input-required">*</span>
                   </div>
                   <div class="iui-list-item-input-wrap">
-                    <input class="iui-list-item-input" type="text" value="2020-12-12 12:12" placeholder="请选择预约办理时间"
+                    <input class="iui-list-item-input" type="text" v-model="subInfo.reservationTime" placeholder="请选择预约办理时间"
                            readonly @click="showDatePicker">
                   </div>
                 </div>
@@ -62,7 +62,7 @@
                     预约办理网点<span class="input-required">*</span>
                   </div>
                   <div class="iui-list-item-input-wrap">
-                    <input class="iui-list-item-input" type="text" value="总部" placeholder="请选择办理网点" readonly
+                    <input class="iui-list-item-input" type="text" v-model="subInfo.reservationBranch" placeholder="请选择办理网点" readonly
                            @click="showAddressPicker">
                   </div>
                 </div>
@@ -73,8 +73,8 @@
                     预约留言
                   </div>
                   <div class="iui-list-item-input-wrap">
-                    <textarea class="iui-list-item-textarea" placeholder="您需要的其他金融服务请留言!"></textarea>
-                    <div class="textarea-tips">限xx字</div>
+                    <textarea class="iui-list-item-textarea" v-model="subInfo.remark" placeholder="您需要的其他金融服务请留言!"></textarea>
+                    <div class="textarea-tips">限50字</div>
                   </div>
                 </div>
               </li>
@@ -91,22 +91,63 @@
   </div>
 </template>
 <script>
+  function formatDate(date) {
+    if (date) {
+      let y = date.getFullYear();
+      let m = date.getMonth() + 1;
+      let d = date.getDate();
+      return y + "-" + formatNum(m) + "-" + formatNum(d) + " " + formatNum(date.getHours()) + ":" + formatNum(date.getMinutes())
+    } else {
+      return ''
+    }
+  }
+
+  // 格式化数字
+  function formatNum(num) {
+    let str = num.toString()
+    if (str.length < 2) {
+      str = "0" + str;
+    }
+    return str;
+  }
+
   export default {
     props: {},
     data: function () {
       return {
         subInfo: {
-          name: '',
-          phone: '',
+          id:'',
+          openId:'',
+          realName: '',
+          realPhone: '',
           business: '',
-          date: '',
-          address: "",
-          note: ''
+          reservationTime: '',
+          reservationBranch: "",
+          remark: '',
+          state:''
         }
       }
     },
     computed: {},
     methods: {
+      getDetail:function(id){
+        //测试服务号
+        //let url = "http://watuji111.natapp4.cc/renren-fast/generator/reservation/info/" + id;
+        //延阳服务号
+        let url = "https://zzttt.xyz/renren-fast/generator/reservation/info/" + id;
+        this.$http({
+          url: url,
+          method: 'get',
+          params: {}
+        }).then((res)=> {   
+          console.log(res)       
+          if (res && res.code === 0) {
+            this.subInfo = res.reservation
+          }else{
+            //console.log(1111)
+          }
+        })
+      },
       pageBack(){
         this.$router.back()
       },
@@ -118,7 +159,7 @@
             value: new Date(),
             columnCount: 6,
             onSelect: function (date) {
-              self.subInfo.date = formatDate(date)
+              self.subInfo.reservationTime = formatDate(date)
             }
           })
         }
@@ -133,17 +174,45 @@
             title: '选择预约网点',
             data: [data],
             onSelect: function (value, index, text) {
-              self.subInfo.address = text
+              self.subInfo.reservationBranch = text
             }
           })
         }
         this.addressPicker.show()
       },
       submit(){
-
+        if (this.subInfo.realName && this.subInfo.realName !='' && this.subInfo.realName.trim != '') {
+          //测试服务号
+          //let url = "http://watuji111.natapp4.cc/renren-fast/generator/reservation/save"
+          //延阳服务号
+          let url = "https://zzttt.xyz/renren-fast/generator/reservation/save"
+          this.$http.post(
+            url, 
+            {
+              'id':this.subInfo.id,
+              'wxuserId':this.subInfo.openId,
+              'realName': this.subInfo.realName,
+              'realPhone': this.subInfo.realPhone,
+              'business': this.subInfo.business,
+              'reservationTime': this.subInfo.reservationTime.toString(),
+              'reservationBranch': this.subInfo.reservationBranch.toString(),
+              'remark': this.subInfo.remark
+            }
+            ).then((res)=> {
+              //console.log(res);
+              if (res && res.code === 0) {
+                this.$router.push({name: 'SubscribeDetail', query: {id: this.subInfo.id}})
+              }else{
+                alert('服务器繁忙，请稍后再试!')
+              }              
+          });        
+        }else{
+          alert('请输入预约信息！')
+        }
       }
     },
     created: function () {
+      this.getDetail(this.$route.query.id)
     }
   }
 </script>

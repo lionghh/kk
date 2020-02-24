@@ -24,7 +24,7 @@
                     <div class="iui-list-item-inner">
                       <div class="iui-list-item-title-row iui-flex-align-center">
                         <div class="iui-list-item-after">
-                          <img src="../../assets/temp/1.png" alt="">
+                          <img v-bind:src="wxinfo.headImgUrl" alt="">
                         </div>
                         <div class="iui-list-item-title">
                           <span class="sub-username">{{item.realName}}</span>
@@ -114,11 +114,15 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+import Vue from 'vue'
   export default {
     props: {},
     data: function () {
       return {
-        openId:'',
+        wxinfo:{
+          openId:'',
+          headImgUrl:''
+        },        
         items: [],
         stateInfo: {
           1: {cname: 'iui-txt-primary', text: '待受理'},
@@ -152,18 +156,19 @@
       }
     },    
     methods: {
-      getMyList:function(){
+      getMyList:function(type){
         //测试服务号
-        let url = "http://watuji111.natapp4.cc/renren-fast/generator/reservation/listAll";
+        //let url = "http://watuji111.natapp4.cc/renren-fast/generator/reservation/listAll";
         //延阳服务号
-        //let url = "https://zzttt.xyz/renren-fast/generator/reservation/listAll";
+        let url = "https://zzttt.xyz/renren-fast/generator/reservation/listAll";
         this.$http({
           url: url,
           method: 'get',
-          params: {'openId':this.openId}
+          params: {'openId':this.wxinfo.openId,'state':type}
         }).then((res)=> {   
           console.log(res)       
           if (res && res.code === 0) {
+            console.log(222)
             this.items = res.list
           }else{
             //console.log(1111)
@@ -171,7 +176,7 @@
         })
       },
       toAdd(){
-        this.$router.push({name: 'AddSubscribe'})
+        this.$router.push({name: 'AddSubscribe', query: this.$route.query})
       },
       toDetail(item){
         this.$router.push({name: 'SubscribeDetail', query: {id: item.id}})
@@ -179,6 +184,7 @@
       changeDataType(type){
         if (this.queryData.dataType != type) {
           this.queryData.dataType = type
+          this.getMyList(type)
           this.getApplyList(0)
         }
       },
@@ -218,6 +224,9 @@
             return
           }
           let item = data || []
+          console.log('@@@@@@@@@@@@')
+          console.log(data)
+          console.log('@@@@@@@@@@@@')
           if (type == 0) { //
             _this.items = item
           } else {
@@ -238,49 +247,53 @@
         })
       },
       getData(url, params){  // 模拟请求得到数据
+        let _this = this
         return new Promise(function (res, rej) {
           setTimeout(function () {
             var data = [
-            {
-              realName: '渰',
-              realPhone: '13112341234',
-              business: '开户',
-              reservationBranch: '总部',
-              reservationTime: '星期天',
-              createTime: '提交时间',
-              remark: '没有留言啊',
-              state: 1
-            }, {
-              realName: '渰',
-              realPhone: '13112341234',
-              business: '开户',
-              reservationBranch: '总部',
-              reservationTime: '星期天',
-              createTime: '提交时间',
-              remark: '没有留言啊',
-              state: 2
-            }, {
-              realName: '渰',
-              realPhone: '13112341234',
-              business: '开户',
-              reservationBranch: '总部',
-              reservationTime: '星期天',
-              createTime: '提交时间',
-              remark: '没有留言啊',
-              state: 3
-            }, 
-            {
-              realName: '渰',
-              realPhone: '13112341234',
-              business: '开户',
-              reservationBranch: '总部',
-              reservationTime: '星期天',
-              createTime: '提交时间',
-              remark: '没有留言啊',
-              state: 4
-            }];
-            var data = this.items;
-            console.log(this.items)
+            // {
+            //   realName: '渰',
+            //   realPhone: '13112341234',
+            //   business: '开户',
+            //   reservationBranch: '总部',
+            //   reservationTime: '星期天',
+            //   createTime: '提交时间',
+            //   remark: '没有留言啊',
+            //   state: 1
+            // }, {
+            //   realName: '渰',
+            //   realPhone: '13112341234',
+            //   business: '开户',
+            //   reservationBranch: '总部',
+            //   reservationTime: '星期天',
+            //   createTime: '提交时间',
+            //   remark: '没有留言啊',
+            //   state: 2
+            // }, {
+            //   realName: '渰',
+            //   realPhone: '13112341234',
+            //   business: '开户',
+            //   reservationBranch: '总部',
+            //   reservationTime: '星期天',
+            //   createTime: '提交时间',
+            //   remark: '没有留言啊',
+            //   state: 3
+            // }, 
+            // {
+            //   realName: '渰',
+            //   realPhone: '13112341234',
+            //   business: '开户',
+            //   reservationBranch: '总部',
+            //   reservationTime: '星期天',
+            //   createTime: '提交时间',
+            //   remark: '没有留言啊',
+            //   state: 4
+            // }
+            ];
+            var data = _this.items;
+            // console.log('###########')
+            // console.log(this.items)
+            // console.log('###########')
             if (params.pageNum == 2) { // 假设第3页没数据了
               data = [];
             }
@@ -290,10 +303,13 @@
       }
     },
     mounted(){      
-      // this.openId = this.$route.query.openId
-      // console.log(this.openId )
-      // this.getMyList()
-      // console.log(this.items)
+      this.wxinfo.openId = this.$route.query.openId
+      this.wxinfo.headImgUrl = this.$route.query.headImgUrl
+      console.log(this.wxinfo.openId )
+      this.getMyList(0)
+      console.log('###########')
+      console.log(this.items)
+      console.log('###########')
       this.getApplyList(0)      
     }
   }

@@ -21,7 +21,7 @@
                     预约人
                   </div>
                   <div class="iui-list-item-input-wrap">
-                    光头强
+                    {{subInfo.realName}}
                   </div>
                 </div>
               </li>
@@ -31,7 +31,7 @@
                     预约人电话
                   </div>
                   <div class="iui-list-item-input-wrap">
-                    13112341234
+                    {{subInfo.realPhone}}
                   </div>
                 </div>
               </li>
@@ -51,7 +51,7 @@
                     提交时间
                   </div>
                   <div class="iui-list-item-input-wrap">
-                    2020-12-12 12:12
+                    {{subInfo.createTime}}
                   </div>
                 </div>
               </li>
@@ -66,7 +66,7 @@
                     预约业务
                   </div>
                   <div class="iui-list-item-input-wrap">
-                    开户
+                    {{subInfo.business}}
                   </div>
                 </div>
               </li>
@@ -76,7 +76,7 @@
                     预约办理时间
                   </div>
                   <div class="iui-list-item-input-wrap">
-                    2020-12-12 12:12
+                    {{subInfo.reservationTime}}
                   </div>
                 </div>
               </li>
@@ -86,7 +86,7 @@
                     预约办理网点
                   </div>
                   <div class="iui-list-item-input-wrap">
-                    总部
+                    {{subInfo.reservationBranch}}
                   </div>
                 </div>
               </li>
@@ -96,7 +96,7 @@
                     预约留言
                   </div>
                   <div class="iui-list-item-input-wrap">
-                    用户输入的文本内容用户输入的文本内容用户输入的文本内容用户输入的文本内容用户输入的文本内容
+                    {{subInfo.remark}}
                   </div>
                 </div>
               </li>
@@ -104,44 +104,88 @@
           </div>
         </div>
       </div>
-      <div class="iui-flex-col iui-fn-bd-t">
-        <ul class="iui-tiled iui-tiled-space iui-fn-p btn-wrap ">
-          <li class="">
-            <button class="iui-btn iui-btn-block iui-btn-warning" @click="toDelete">删除</button>
-          </li>
-          <li class="">
-            <button class="iui-btn iui-btn-block" @click="toEdit">编辑</button>
-          </li>
-        </ul>
+      <div v-if="subInfo.state == 1">
+        <div class="iui-flex-col iui-fn-bd-t">
+          <ul class="iui-tiled iui-tiled-space iui-fn-p btn-wrap ">
+            <li class="">
+              <button class="iui-btn iui-btn-block iui-btn-warning" @click="toDelete">删除</button>
+            </li>
+            <li class="">
+              <button class="iui-btn iui-btn-block" @click="toEdit">编辑</button>
+            </li>
+          </ul>
+        </div>
       </div>
-
-      <div class="iui-flex-col iui-fn-bd-t">
-        <ul class="iui-tiled iui-tiled-space iui-fn-p btn-wrap ">
-          <li class="">
-            <button class="iui-btn iui-btn-block iui-btn-warning" @click="toDelete">删除</button>
-          </li>
-        </ul>
-      </div>
+      <div v-else>
+        <div class="iui-flex-col iui-fn-bd-t">
+          <ul class="iui-tiled iui-tiled-space iui-fn-p btn-wrap ">
+            <li class="">
+              <button class="iui-btn iui-btn-block iui-btn-warning" @click="toDelete">删除</button>
+            </li>
+          </ul>
+        </div>
+      </div>  
     </div>
   </div>
 </template>
 <script>
+import VueCookies from 'vue-cookies'
   export default {
     props: {},
     data: function () {
-      return {
+      return {        
         subInfo: {
-          name: '',
-          phone: '',
+          id:'',
+          openId:'',
+          realName: '',
+          realPhone: '',
           business: '',
-          date: '',
-          address: "",
-          note: ''
+          reservationTime: '',
+          reservationBranch: "",
+          remark: '',
+          state:''
         }
       }
     },
     computed: {},
     methods: {
+      getDetail:function(id){
+        //测试服务号
+        //let url = "http://watuji111.natapp4.cc/renren-fast/generator/reservation/info/" + id;
+        //延阳服务号
+        let url = "https://zzttt.xyz/renren-fast/generator/reservation/info/" + id;
+        this.$http({
+          url: url,
+          method: 'get',
+          params: {}
+        }).then((res)=> {   
+          console.log(res)       
+          if (res && res.code === 0) {
+            this.subInfo = res.reservation
+          }else{
+            //console.log(1111)
+          }
+        })
+      },
+      delbyid:function(ids){
+        //测试服务号
+        //let url = "http://watuji111.natapp4.cc/renren-fast/generator/reservation/delete";
+        //延阳服务号
+        let url = "https://zzttt.xyz/renren-fast/generator/reservation/delete";
+        this.$http({
+          url: url,
+          method: 'post',
+          data: ids
+        }).then((res)=> {   
+          console.log(res)       
+          if (res && res.code === 0) {
+            this.$router.push({name: 'SubscribeList', query: {openId: $cookies.get('openId'),nickname: $cookies.get('nickname'),headImgUrl: $cookies.get('headImgUrl')}})
+          }else{
+            //console.log(1111)
+            alert('服务器繁忙，请稍后再试!')
+          }
+        })
+      },
       pageBack(){
         this.$router.back()
       },
@@ -149,10 +193,12 @@
         this.$router.push({name: 'SubscribeEdit', query: {id: this.subInfo.id}})
       },
       toDelete(){
+        // 如果访问不了变量，则通过这种方式先缓存this
+        let _this = this
         this.$createDialog({
           type: 'confirm',
-          title: '我是标题',
-          content: '我是内容',
+          title: '删除提醒',
+          content: '确定删除么?',
           confirmBtn: {
             text: '确定',
             active: true,
@@ -166,7 +212,10 @@
             href: 'javascript:;'
           },
           onConfirm: function () {
-
+            //console.log(_this.subInfo.id)
+            let ids = []
+            ids.push(_this.subInfo.id)
+            _this.delbyid(ids)
           },
           onCancel: function () {
 
@@ -175,6 +224,7 @@
       }
     },
     created: function () {
+      this.getDetail(this.$route.query.id)
     }
   }
 </script>
