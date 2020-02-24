@@ -3,14 +3,17 @@
     <div class="iui-flex-content">
       <div class="page-content">
         <div class="sub-banner">
-          <ul>
-            <li>
-              <img src="../../assets/img/1.jpg" alt="">
-              <div class="banner-desc">
-                宁乡农商银行—建设有温度的百姓银行
-              </div>
-            </li>
-          </ul>
+          <cube-slide ref="slide" :data="items" @change="changePage" class="" :showDots="false">
+            <cube-slide-item v-for="(item, index) in items" :key="index" @click.native="clickHandler(item, index)">
+              <a href="javascript:;">
+                <img :src="item.image">
+              </a>
+            </cube-slide-item>
+          </cube-slide>
+
+          <div class="banner-desc">
+            宁乡农商银行—建设有温度的百姓银行
+          </div>
         </div>
 
         <div class="list-form">
@@ -43,7 +46,8 @@
               预约办理时间<span class="list-form-required">*</span>
             </div>
             <div class="list-form-input-wrap">
-              <input class="list-form-input" type="text" placeholder="请输预约办理时间" v-model="subInfo.reservationTime" readonly
+              <input class="list-form-input" type="text" placeholder="请输预约办理时间" v-model="subInfo.reservationTime"
+                     readonly
                      @click="showDatePicker">
             </div>
           </div>
@@ -52,7 +56,8 @@
               预约办理网点<span class="list-form-required">*</span>
             </div>
             <div class="list-form-input-wrap">
-              <input class="list-form-input" type="text" placeholder="请输入预约办理网点" v-model="subInfo.reservationBranch" readonly
+              <input class="list-form-input" type="text" placeholder="请输入预约办理网点" v-model="subInfo.reservationBranch"
+                     readonly
                      @click="showAddressPicker">
             </div>
           </div>
@@ -83,6 +88,10 @@
 <script type="text/ecmascript-6">
   import axios from 'axios'
   import VueCookies from 'vue-cookies'
+  import img1 from "../../assets/img/1.jpg"
+  import img2 from "../../assets/img/2.jpg"
+  import img3 from "../../assets/img/3.jpg"
+
   function formatDate(date) {
     if (date) {
       let y = date.getFullYear();
@@ -107,9 +116,23 @@
     props: {},
     data() {
       return {
-        test:10,
-        subInfo: {          
-          openId:'',
+        items: [
+          {
+            url: '',
+            image: img1
+          },
+          {
+            url: '',
+            image: img2
+          },
+          {
+            url: '',
+            image: img3
+          }
+        ],
+        test: 10,
+        subInfo: {
+          openId: '',
           realName: '',
           realPhone: '',
           business: '',
@@ -117,8 +140,8 @@
           reservationBranch: "",
           remark: ''
         },
-        wxUrl:'',
-        wxInfo:{
+        wxUrl: '',
+        wxInfo: {
           openId: '',
           nickname: '',
           sexDesc: '',
@@ -146,19 +169,23 @@
     },
     computed: {},
     methods: {
+      changePage(current) {
+      },
+      clickHandler(item, index) {
+      },
       //判断是否微信浏览器
-      isWeixinBrowser: function () {  
-          var ua = navigator.userAgent.toLowerCase();  
-          var result = (/micromessenger/.test(ua)) ? true : false;
-          if (result) {
-              console.log('你正在访问微信浏览器');
-          }
-          else {
-              console.log('你访问的不是微信浏览器');
-          }
-          return result;
-      },  
-      getWxUrl:function(){
+      isWeixinBrowser: function () {
+        var ua = navigator.userAgent.toLowerCase();
+        var result = (/micromessenger/.test(ua)) ? true : false;
+        if (result) {
+          console.log('你正在访问微信浏览器');
+        }
+        else {
+          console.log('你访问的不是微信浏览器');
+        }
+        return result;
+      },
+      getWxUrl: function () {
         //console.log(window.location.href)
         this.$http({
           // url: "https://zzttt.xyz/renren-fast/generator/reservation/wx/wxurl/wxa548cb4128d6400b",
@@ -166,26 +193,26 @@
           // params: {'redirectUrl':'https://zzttt.xyz/renren-fast/'}
           url: "http://watuji111.natapp4.cc/renren-fast/generator/reservation/wx/wxurl/wx2ad03fd034a898d8",
           method: 'get',
-          params: {'redirectUrl':'http://watuji111.natapp4.cc/renren-fast/generator/reservation//wx/wxlogin/wx2ad03fd034a898d8'}
-        }).then((res)=> {          
+          params: {'redirectUrl': 'http://watuji111.natapp4.cc/renren-fast/generator/reservation//wx/wxlogin/wx2ad03fd034a898d8'}
+        }).then((res)=> {
           if (res && res.code === 0) {
 
-          }else{
+          } else {
             //console.log(1111)
           }
         })
       },
-      getWxInfo:function(){
+      getWxInfo: function () {
         this.$http({
           url: this.wxUrl,
           method: 'get',
           params: ''//this.$http.adornParams()
         }).then((res)=> {
           //console.log(data)
-          if (res && res.code === 0) {            
+          if (res && res.code === 0) {
             console.log(res)
-          }else{
-            
+          } else {
+
           }
         })
       },
@@ -224,33 +251,33 @@
       submit(){
         //console.log(this.subInfo)      
         //return  
-        if (this.subInfo.realName && this.subInfo.realName !='' && this.subInfo.realName.trim != '') {
+        if (this.subInfo.realName && this.subInfo.realName != '' && this.subInfo.realName.trim != '') {
           //测试服务号
           //let url = "http://watuji111.natapp4.cc/renren-fast/generator/reservation/save"
           //延阳服务号
           let url = "https://zzttt.xyz/renren-fast/generator/reservation/save"
           this.$http.post(
-            url, 
-            {
-              'wxuserId':this.subInfo.openId,
-              'realName': this.subInfo.realName,
-              'realPhone': this.subInfo.realPhone,
-              'business': this.subInfo.business,
-              'reservationTime': this.subInfo.reservationTime.toString(),
-              'reservationBranch': this.subInfo.reservationBranch.toString(),
-              'remark': this.subInfo.remark
+              url,
+              {
+                'wxuserId': this.subInfo.openId,
+                'realName': this.subInfo.realName,
+                'realPhone': this.subInfo.realPhone,
+                'business': this.subInfo.business,
+                'reservationTime': this.subInfo.reservationTime.toString(),
+                'reservationBranch': this.subInfo.reservationBranch.toString(),
+                'remark': this.subInfo.remark
+              }
+          ).then((res)=> {
+            //console.log(res);
+            if (res && res.code === 0) {
+              this.$router.push({
+                path: '/SubscribeList', query: this.$route.query
+              })
+            } else {
+              alert('服务器繁忙，请稍后再试!')
             }
-            ).then((res)=> {
-              //console.log(res);
-              if (res && res.code === 0) {
-                this.$router.push({
-                  path: '/SubscribeList', query: this.$route.query
-                })
-              }else{
-                alert('服务器繁忙，请稍后再试!')
-              }              
-          });        
-        }else{
+          });
+        } else {
           alert('请输入预约信息！')
         }
       },
@@ -265,14 +292,14 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus" rel="stylesheet/stylus" scoped>
-  .sub-banner ul li
+  .sub-banner
     position relative
 
-  .sub-banner li img
+  .sub-banner  img
     display block
     width 100%
 
-  .sub-banner li .banner-desc
+  .sub-banner  .banner-desc
     position absolute
     bottom 0
     left 0
@@ -355,5 +382,4 @@
     line-height 18px
     .mdi
       font-size 14px
-
 </style>
