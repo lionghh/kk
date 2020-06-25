@@ -10,6 +10,8 @@ import store from './store'
 import router from './router'
 
 Vue.config.productionTip = false
+//Vue.prototype.host = "http://localhost:8088/wx"
+//Vue.prototype.host = "http://195.164.5.11/yymicapi"
 
 new Vue({
   store,

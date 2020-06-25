@@ -151,16 +151,16 @@ import VueCookies from 'vue-cookies'
     methods: {
       getDetail:function(id){
         //测试服务号
-        //let url = "http://watuji111.natapp4.cc/renren-fast/generator/reservation/info/" + id;
+        let url = "/wx/generator/reservation/info/" + id;
         //延阳服务号
-        let url = "https://zzttt.xyz/renren-fast/generator/reservation/info/" + id;
+        //let url = "https://zzttt.xyz/renren-fast/generator/reservation/info/" + id;
         this.$http({
           url: url,
           method: 'get',
           params: {}
         }).then((res)=> {   
           console.log(res)       
-          if (res && res.code === 0) {
+          if (res && res.code === 200) {
             this.subInfo = res.reservation
           }else{
             //console.log(1111)
@@ -169,16 +169,16 @@ import VueCookies from 'vue-cookies'
       },
       delbyid:function(ids){
         //测试服务号
-        //let url = "http://watuji111.natapp4.cc/renren-fast/generator/reservation/delete";
+        let url = "/wx/generator/reservation/delete";
         //延阳服务号
-        let url = "https://zzttt.xyz/renren-fast/generator/reservation/delete";
+        //let url = "https://zzttt.xyz/renren-fast/generator/reservation/delete";
         this.$http({
           url: url,
           method: 'post',
           data: ids
         }).then((res)=> {   
           console.log(res)       
-          if (res && res.code === 0) {
+          if (res && res.code === 200) {
             this.$router.push({name: 'SubscribeList', query: {openId: $cookies.get('openId'),nickname: $cookies.get('nickname'),headImgUrl: $cookies.get('headImgUrl')}})
           }else{
             //console.log(1111)

@@ -8,6 +8,11 @@ import AddSubscribe from '../pages/subscribe/AddSubscribe.vue'
 import SubscribeDetail from '../pages/subscribe/SubscribeDetail.vue'
 import SubscribeEdit from '../pages/subscribe/SubscribeEdit.vue'
 
+//网点管理员处理
+import ManageList from '../pages/subscribe/ManageList.vue'
+
+//转盘
+import test from '../pages/subscribe/test.vue'
 
 // meta设置页面是否缓存
 // keepAlive则页面缓存
@@ -30,6 +35,14 @@ export default [
     path: '/SubscribeEdit',
     name: 'SubscribeEdit',
     component: SubscribeEdit
+  },{
+    path: '/ManageList',
+    name: 'ManageList',
+    component: ManageList
+  },{
+    path: '/test',
+    name: 'test',
+    component: test
   },{
     path: '/error',
     name: 'Error',

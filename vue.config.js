@@ -1,4 +1,14 @@
 module.exports = {
+
+  // 跨域
+  devServer: {
+		proxy: {
+			'/wx': {
+				target: 'http://127.0.0.1:8889'
+			},
+		}
+	},
+
   css: {
     loaderOptions: {
       css: {

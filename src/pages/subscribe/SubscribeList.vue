@@ -114,6 +114,8 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+import fly from '../../http/request';
+import toast from '../../http/toast';
 import Vue from 'vue'
   export default {
     props: {},
@@ -157,17 +159,23 @@ import Vue from 'vue'
     },    
     methods: {
       getMyList:function(type){
+        if(!this.wxinfo.openId){
+          alert("授权过期，请您在公众号菜单重新访问")
+          //return
+        }
         //测试服务号
-        //let url = "http://watuji111.natapp4.cc/renren-fast/generator/reservation/listAll";
+        let url = "/wx/generator/reservation/listAll";
+        
         //延阳服务号
-        let url = "https://zzttt.xyz/renren-fast/generator/reservation/listAll";
+        //let url = "https://zzttt.xyz/renren-fast/generator/reservation/listAll";
         this.$http({
           url: url,
           method: 'get',
+          //dataType: 'JSONP',
           params: {'openId':this.wxinfo.openId,'state':type}
         }).then((res)=> {   
           console.log(res)       
-          if (res && res.code === 0) {
+          if (res && res.code === 200) {
             console.log(222)
             this.items = res.list
           }else{
@@ -304,7 +312,8 @@ import Vue from 'vue'
     },
     mounted(){      
       this.wxinfo.openId = this.$route.query.openId
-      this.wxinfo.headImgUrl = this.$route.query.headImgUrl
+      this.wxinfo.headImgUrl = this.$route.query.headImgUrl      
+
       console.log(this.wxinfo.openId )
       this.getMyList(0)
       console.log('###########')

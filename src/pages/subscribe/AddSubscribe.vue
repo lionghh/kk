@@ -37,8 +37,13 @@
             <div class="list-form-label">
               预约业务<span class="list-form-required">*</span>
             </div>
-            <div class="list-form-input-wrap">
+            <!-- <div class="list-form-input-wrap">
               <input class="list-form-input" type="text" placeholder="请输入预约业务" v-model="subInfo.business">
+            </div> -->
+            <div class="list-form-input-wrap">
+              <input class="list-form-input" type="text" placeholder="请输入预约业务" v-model="subInfo.business"
+                     readonly
+                     @click="showBusiness">
             </div>
           </div>
           <div class="list-form-row">
@@ -98,6 +103,7 @@
       let m = date.getMonth() + 1;
       let d = date.getDate();
       return y + "-" + formatNum(m) + "-" + formatNum(d) + " " + formatNum(date.getHours()) + ":" + formatNum(date.getMinutes())
+      //return y + "-" + formatNum(m) + "-" + formatNum(d) + " " + formatNum(date.getHours())
     } else {
       return ''
     }
@@ -156,7 +162,12 @@
       }
     },
     mounted () {
-      this.isWeixinBrowser();
+      // let isweixin = this.isWeixinBrowser();
+      // if(!isweixin){
+      //   alert('请在微信中打开该页面！')
+      //   return
+      // }
+      console.log(this.host)
       $cookies.set('openId', this.$route.query.openId)
       $cookies.set('nickname', this.$route.query.nickname)
       $cookies.set('headImgUrl', this.$route.query.headImgUrl)
@@ -185,23 +196,7 @@
         }
         return result;
       },
-      getWxUrl: function () {
-        //console.log(window.location.href)
-        this.$http({
-          // url: "https://zzttt.xyz/renren-fast/generator/reservation/wx/wxurl/wxa548cb4128d6400b",
-          // method: 'get',
-          // params: {'redirectUrl':'https://zzttt.xyz/renren-fast/'}
-          url: "http://watuji111.natapp4.cc/renren-fast/generator/reservation/wx/wxurl/wx2ad03fd034a898d8",
-          method: 'get',
-          params: {'redirectUrl': 'http://watuji111.natapp4.cc/renren-fast/generator/reservation//wx/wxlogin/wx2ad03fd034a898d8'}
-        }).then((res)=> {
-          if (res && res.code === 0) {
-
-          } else {
-            //console.log(1111)
-          }
-        })
-      },
+      
       getWxInfo: function () {
         this.$http({
           url: this.wxUrl,
@@ -209,7 +204,7 @@
           params: ''//this.$http.adornParams()
         }).then((res)=> {
           //console.log(data)
-          if (res && res.code === 0) {
+          if (res && res.code === 200) {
             console.log(res)
           } else {
 
@@ -224,8 +219,8 @@
           let self = this
           this.datePicker = this.$createDatePicker({
             title: '选择预约时间',
-            value: new Date(),
-            columnCount: 6,
+            value: new Date(Date.now() + 1*24*60*60*1000),
+            columnCount: 4,
             onSelect: function (date) {
               self.subInfo.reservationTime = formatDate(date)
             }
@@ -236,8 +231,25 @@
       showAddressPicker(){
         if (!this.addressPicker) {
           let self = this
-          let data = [{text: '剧毒', value: '剧毒value'}, {text: '蚂蚁', value: '蚂蚁value'},
-            {text: '幽鬼', value: '幽鬼value'}];
+          let data = [{text: '营业部', value: '营业部value'}, {text: '玉潭支行', value: '玉潭支行value'},
+            {text: '城郊支行', value: '城郊支行value'},{text: '白马桥支行', value: '白马桥支行value'},
+            {text: '沩东支行', value: '沩东支行value'},{text: '道林支行', value: '道林支行value'},
+            {text: '大屯营支行', value: '大屯营支行value'},{text: '大屯营支行', value: '大屯营支行value'},
+            {text: '花明楼支行', value: '花明楼支行value'},{text: '东湖塘支行', value: '东湖塘支行value'},
+            {text: '南田坪支行', value: '南田坪支行value'},{text: '坝塘支行', value: '坝塘支行value'},
+            {text: '资福支行', value: '资福支行value'},{text: '灰汤支行', value: '灰汤支行value'},
+            {text: '偕乐桥支行', value: '偕乐桥支行value'},{text: '双江口支行', value: '双江口支行value'},
+            {text: '金洲支行', value: '金洲支行value'},{text: '朱良桥支行', value: '朱良桥支行value'},
+            {text: '夏铎铺支行', value: '夏铎铺支行value'},{text: '回龙铺支行', value: '回龙铺支行value'},
+            {text: '菁华铺支行', value: '菁华铺支行value'},{text: '煤炭坝支行', value: '煤炭坝支行value'},
+            {text: '喻家坳支行', value: '喻家坳支行value'},{text: '大成桥支行', value: '大成桥支行value'},
+            {text: '双凫铺支行', value: '双凫铺支行value'},{text: '老粮仓支行', value: '老粮仓支行value'},
+            {text: '枫木桥支行', value: '枫木桥支行value'},{text: '流沙河支行', value: '流沙河支行value'},
+            {text: '青山桥支行', value: '青山桥支行value'},{text: '横市支行', value: '横市支行value'},
+            {text: '黄材支行', value: '黄材支行value'},{text: '沩山支行', value: '沩山支行value'},
+            {text: '巷子口支行', value: '巷子口支行value'},{text: '龙田支行', value: '龙田支行value'},
+            {text: '沙田支行', value: '沙田支行value'},{text: '青年支行', value: '青年支行value'},
+            {text: '宁宾支行', value: '宁宾支行value'},{text: '工业园支行', value: '工业园支行value'}];
           this.addressPicker = this.$createPicker({
             title: '选择预约网点',
             data: [data],
@@ -248,28 +260,45 @@
         }
         this.addressPicker.show()
       },
+      showBusiness(){
+        //存款、贷款、信用卡、ETC、POS
+        if (!this.businesPicker) {
+          let self = this
+          let data = [{text: '存款', value: '存款value'}, {text: '贷款', value: '贷款value'},
+            {text: '信用卡', value: '信用卡value'},{text: 'ETC', value: 'ETCvalue'},
+            {text: 'POS', value: 'POSvalue'},{text: '大额取款', value: '大额取款value'}];
+          this.businesPicker = this.$createPicker({
+            title: '选择预约业务',
+            data: [data],
+            onSelect: function (value, index, text) {
+              self.subInfo.business = text
+            }
+          })
+        }
+        this.businesPicker.show()
+      },
       submit(){
-        //console.log(this.subInfo)      
+        //console.log('!!!!!!!!!!!!!!!')      
         //return  
         if (this.subInfo.realName && this.subInfo.realName != '' && this.subInfo.realName.trim != '') {
           //测试服务号
-          //let url = "http://watuji111.natapp4.cc/renren-fast/generator/reservation/save"
+          let url = "/wx/generator/reservation/save"
           //延阳服务号
-          let url = "https://zzttt.xyz/renren-fast/generator/reservation/save"
+          //let url = "https://zzttt.xyz/renren-fast/generator/reservation/save"
           this.$http.post(
               url,
               {
                 'wxuserId': this.subInfo.openId,
                 'realName': this.subInfo.realName,
                 'realPhone': this.subInfo.realPhone,
-                'business': this.subInfo.business,
+                'business': this.subInfo.business.toString(),
                 'reservationTime': this.subInfo.reservationTime.toString(),
                 'reservationBranch': this.subInfo.reservationBranch.toString(),
                 'remark': this.subInfo.remark
               }
           ).then((res)=> {
             //console.log(res);
-            if (res && res.code === 0) {
+            if (res && res.code === 200) {
               this.$router.push({
                 path: '/SubscribeList', query: this.$route.query
               })
@@ -282,6 +311,13 @@
         }
       },
       toList(){
+        // let isweixin = this.isWeixinBrowser();
+        // if(!isweixin){
+        //   alert('请在微信中打开该页面！')
+        //   return
+        // }else{
+        //   this.$router.push({name: 'SubscribeList', query: this.$route.query})
+        // }
         this.$router.push({name: 'SubscribeList', query: this.$route.query})
       }
     },

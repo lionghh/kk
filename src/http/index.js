@@ -30,14 +30,14 @@ axios.interceptors.response.use(function (response) {  // 在接收请求之前�
     let data = response.data
 
     // 未登录，登录
-    if (data.respCode != '0000') {
-      if (data.respCode == '0001') {  // 权限失败
-        router.push({name: "Error"})  // 往错误页面跳转
-      } else if (!response.config.headers.errorHandler) {  // 可在请求时在header里面设置参数表示自己处理异常
-        Dialog.$create({type: 'alert', title: '提示', content: response.data.respMsg || '系统异常，请稍后重试'}).show()
-      }
-      return Promise.reject(response)
-    }
+    // if (data.respCode != '0000') {
+    //   if (data.respCode == '0001') {  // 权限失败
+    //     router.push({name: "Error"})  // 往错误页面跳转
+    //   } else if (!response.config.headers.errorHandler) {  // 可在请求时在header里面设置参数表示自己处理异常
+    //     Dialog.$create({type: 'alert', title: '提示', content: response.data.respMsg || '系统异常，请稍后重试'}).show()
+    //   }
+    //   return Promise.reject(response)
+    // }
     return data
   },
   function (error) {    // 对响应错误做些什么
