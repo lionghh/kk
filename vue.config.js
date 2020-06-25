@@ -4,8 +4,8 @@ module.exports = {
   devServer: {
 		proxy: {
 			'/renren-fast': {
-        target: 'https://127.0.0.1:8889'
-        //target: 'https://zzttt.xyz:8889'
+        //target: 'https://127.0.0.1:8889'
+        target: 'https://zzttt.xyz:8889'
 			},
 		}
 	},

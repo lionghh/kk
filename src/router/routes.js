@@ -10,6 +10,8 @@ import SubscribeEdit from '../pages/subscribe/SubscribeEdit.vue'
 
 //网点管理员处理
 import ManageList from '../pages/subscribe/ManageList.vue'
+//网点管理员详情
+import ManageDetail from '../pages/subscribe/ManageDetail.vue'
 
 //转盘
 import test from '../pages/subscribe/test.vue'
@@ -39,6 +41,10 @@ export default [
     path: '/ManageList',
     name: 'ManageList',
     component: ManageList
+  },{
+    path: '/ManageDetail',
+    name: 'ManageDetail',
+    component: ManageDetail
   },{
     path: '/test',
     name: 'test',

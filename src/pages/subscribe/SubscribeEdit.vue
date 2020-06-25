@@ -38,6 +38,26 @@
               <li class="iui-list-item">
                 <div class="iui-list-item-inner">
                   <div class="iui-list-item-label">
+                    您的身份证号码
+                  </div>
+                  <div class="iui-list-item-input-wrap">
+                    <input class="iui-list-item-input" type="text" v-model="subInfo.cardId" placeholder="请输入您的身份证号码">
+                  </div>
+                </div>
+              </li>
+              <li class="iui-list-item">
+                <div class="iui-list-item-inner">
+                  <div class="iui-list-item-label">
+                    您的地址
+                  </div>
+                  <div class="iui-list-item-input-wrap">
+                    <input class="iui-list-item-input" type="text" v-model="subInfo.address" placeholder="请输入您的地址">
+                  </div>
+                </div>
+              </li>
+              <li class="iui-list-item">
+                <div class="iui-list-item-inner">
+                  <div class="iui-list-item-label">
                     预约业务<span class="input-required">*</span>
                   </div>
                   <!-- <div class="iui-list-item-input-wrap">
@@ -127,6 +147,8 @@
           openId:'',
           realName: '',
           realPhone: '',
+          cardId:'',
+          address:'',
           business: '',
           reservationTime: '',
           reservationBranch: "",
@@ -246,6 +268,26 @@
           return
         }
 
+        if (!(/[\u4e00-\u9fa5]/g.test(this.subInfo.realName))){
+          this.$createDialog({
+            type: 'alert',
+            //title: '我是标题',
+            content: '请输入您的中文名，谢谢！',
+            icon: 'cubeic-alert'
+          }).show()
+          return     
+        }
+
+        if (!(/^1[34578]\d{9}$/.test(this.subInfo.realPhone))){
+          this.$createDialog({
+            type: 'alert',
+            //title: '我是标题',
+            content: '请输入正确的手机号码，谢谢！',
+            icon: 'cubeic-alert'
+          }).show()
+          return          
+        }
+
         let d = new Date(this.subInfo.reservationTime.toString())        
         let hours = d.getHours()     
         if(hours < 9 || hours > 16){
@@ -277,6 +319,8 @@
             'wxuserId':this.subInfo.openId,
             'realName': this.subInfo.realName,
             'realPhone': this.subInfo.realPhone,
+            'cardId':this.subInfo.cardId,
+            'address':this.subInfo.address,
             'business': this.subInfo.business.toString(),
             'reservationTime': this.subInfo.reservationTime.toString(),
             'reservationBranch': this.subInfo.reservationBranch.toString(),

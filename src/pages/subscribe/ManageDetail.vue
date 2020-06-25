@@ -124,7 +124,7 @@
           </div>
         </div>
       </div>
-      <div v-if="subInfo.state == 1">
+      <!-- <div v-if="subInfo.state == 1">
         <div class="iui-flex-col iui-fn-bd-t">
           <ul class="iui-tiled iui-tiled-space iui-fn-p btn-wrap ">
             <li class="">
@@ -144,7 +144,7 @@
             </li>
           </ul>
         </div>
-      </div>  
+      </div>   -->
     </div>
   </div>
 </template>

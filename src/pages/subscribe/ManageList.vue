@@ -19,7 +19,7 @@
 
             <div class="iui-list iui-list-media">
               <ul>
-                <li v-for="item in items" @click="">
+                <li v-for="item in items" @click="toDetail(item)">
                   <a class="iui-list-item iui-list-item-link">
                     <div class="iui-list-item-inner">
                       <div class="iui-list-item-title-row iui-flex-align-center">
@@ -198,7 +198,7 @@ import Vue from 'vue'
         this.$router.push({name: 'AddSubscribe', query: this.$route.query})
       },
       toDetail(item){
-        this.$router.push({name: 'SubscribeDetail', query: {id: item.id}})
+        this.$router.push({name: 'ManageDetail', query: {id: item.id}})
       },
       changeDataType(type){
         if (this.queryData.dataType != type) {
