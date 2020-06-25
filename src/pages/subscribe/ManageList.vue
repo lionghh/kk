@@ -162,13 +162,21 @@ import Vue from 'vue'
     methods: {
       getMyList:function(type){
         if(!this.wxinfo.openId){
-          alert("授权过期，请您在公众号的点击预约推送消息重新访问")
+          //alert("授权过期，请您在公众号的点击预约推送消息重新访问")
+
+          this.$createDialog({
+            type: 'alert',
+            //title: '我是标题',
+            content: '授权过期，请您在公众号的点击预约推送消息重新访问',
+            icon: 'cubeic-alert'
+          }).show()  
+          
           return
         }
         //测试服务号
         //let url = "http://watuji111.natapp4.cc/renren-fast/generator/reservation/listAll";
         //本地
-        let url = "/wx/generator/reservation/list4manager";
+        let url = "/renren-fast/generator/reservation/list4manager";
         //延阳服务号
         //let url = "https://zzttt.xyz/renren-fast/generator/reservation/list4manager";
         this.$http({
@@ -177,7 +185,8 @@ import Vue from 'vue'
           params: {'openId':this.wxinfo.openId,'state':type}
         }).then((res)=> {   
           console.log(res)       
-          if (res && res.code === 200) {
+          //if (res && res.code === 200) {
+          if (res && res.code === 0) {  
             console.log(222)
             this.items = res.list
           }else{
@@ -261,7 +270,7 @@ import Vue from 'vue'
         // console.log(state)
         // console.log(item)
         // return
-        let url = "/wx/generator/reservation/save";
+        let url = "/renren-fast/generator/reservation/save";
         //延阳服务号
         //let url = "https://zzttt.xyz/renren-fast/generator/reservation/save";
         this.$http.post(
@@ -282,38 +291,19 @@ import Vue from 'vue'
           }
         ).then((res)=> {
           //console.log(res);
-          if (res && res.code === 200) {
+          //if (res && res.code === 200) {
+          if (res && res.code === 0) {  
             //this.getMyList(0)
             location.reload()
           } else {
-            alert('服务器繁忙，请稍后再试!')
+            this.$createDialog({
+              type: 'alert',
+              //title: '我是标题',
+              content: '服务器繁忙，请稍后再试!',
+              icon: 'cubeic-alert'
+            }).show()  
           }
-        })
-        // this.$http({
-        //   url: url,
-        //   method: 'post',
-        //   params: {
-        //     'id':item.id,
-        //     'realName': item.realName,
-        //     'realPhone': item.realPhone,
-        //     'business': item.business,
-        //     'reservationTime': item.reservationTime,
-        //     'reservationBranch': item.reservationBranch,
-        //     'remark': item.remark,
-        //     'createBy': item.createBy,
-        //     'createTime': item.createTime,
-        //     'lastUpdateBy': item.lastUpdateBy,
-        //     'lastUpdateTime': item.lastUpdateTime,
-        //     'state': item.state
-        //   }
-        // }).then((res)=> {   
-        //   console.log(res)       
-        //   if (res && res.code === 200) {
-        //     this.getMyList(0)
-        //   }else{
-        //     alert("服务器开小差了，请稍后再试")
-        //   }
-        // })
+        })        
       },
       getData(url, params){  // 模拟请求得到数据
         let _this = this

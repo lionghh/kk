@@ -151,7 +151,7 @@ import VueCookies from 'vue-cookies'
     methods: {
       getDetail:function(id){
         //测试服务号
-        let url = "/wx/generator/reservation/info/" + id;
+        let url = "/renren-fast/generator/reservation/info/" + id;
         //延阳服务号
         //let url = "https://zzttt.xyz/renren-fast/generator/reservation/info/" + id;
         this.$http({
@@ -160,7 +160,8 @@ import VueCookies from 'vue-cookies'
           params: {}
         }).then((res)=> {   
           console.log(res)       
-          if (res && res.code === 200) {
+          //if (res && res.code === 200) {
+          if (res && res.code === 0) {    
             this.subInfo = res.reservation
           }else{
             //console.log(1111)
@@ -169,7 +170,7 @@ import VueCookies from 'vue-cookies'
       },
       delbyid:function(ids){
         //测试服务号
-        let url = "/wx/generator/reservation/delete";
+        let url = "/renren-fast/generator/reservation/delete";
         //延阳服务号
         //let url = "https://zzttt.xyz/renren-fast/generator/reservation/delete";
         this.$http({
@@ -178,11 +179,16 @@ import VueCookies from 'vue-cookies'
           data: ids
         }).then((res)=> {   
           console.log(res)       
-          if (res && res.code === 200) {
+          //if (res && res.code === 200) {
+          if (res && res.code === 0) {    
             this.$router.push({name: 'SubscribeList', query: {openId: $cookies.get('openId'),nickname: $cookies.get('nickname'),headImgUrl: $cookies.get('headImgUrl')}})
           }else{
-            //console.log(1111)
-            alert('服务器繁忙，请稍后再试!')
+            this.$createDialog({
+              type: 'alert',
+              //title: '我是标题',
+              content: '服务器繁忙，请稍后再试!',
+              icon: 'cubeic-alert'
+            }).show()  
           }
         })
       },

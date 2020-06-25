@@ -3,8 +3,9 @@ module.exports = {
   // 跨域
   devServer: {
 		proxy: {
-			'/wx': {
-				target: 'http://127.0.0.1:8889'
+			'/renren-fast': {
+        target: 'https://127.0.0.1:8889'
+        //target: 'https://zzttt.xyz:8889'
 			},
 		}
 	},

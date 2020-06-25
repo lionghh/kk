@@ -160,11 +160,17 @@ import Vue from 'vue'
     methods: {
       getMyList:function(type){
         if(!this.wxinfo.openId){
-          alert("授权过期，请您在公众号菜单重新访问")
+          //alert("授权过期，请您在公众号菜单重新访问")
+          this.$createDialog({
+            type: 'alert',
+            //title: '我是标题',
+            content: '授权过期，请您在公众号菜单重新访问',
+            icon: 'cubeic-alert'
+          }).show()            
           //return
         }
         //测试服务号
-        let url = "/wx/generator/reservation/listAll";
+        let url = "/renren-fast/generator/reservation/listAll";
         
         //延阳服务号
         //let url = "https://zzttt.xyz/renren-fast/generator/reservation/listAll";
@@ -175,7 +181,8 @@ import Vue from 'vue'
           params: {'openId':this.wxinfo.openId,'state':type}
         }).then((res)=> {   
           console.log(res)       
-          if (res && res.code === 200) {
+          //if (res && res.code === 200) {
+          if (res && res.code === 0) {  
             console.log(222)
             this.items = res.list
           }else{

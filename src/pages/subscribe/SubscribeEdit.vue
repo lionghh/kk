@@ -89,7 +89,7 @@
       </div>
       <div class="iui-flex-col iui-fn-bd-t">
         <ul class="iui-tiled iui-tiled-space iui-fn-p btn-wrap ">
-          <button class="iui-btn iui-btn-block iui-btn-highlight" @click="submit">提交</button>
+          <button class="iui-btn iui-btn-block iui-btn-highlight" @click="submit">{{buttonValue}}</button>
         </ul>
       </div>
     </div>
@@ -120,6 +120,8 @@
     props: {},
     data: function () {
       return {
+        isDisable:false,
+        buttonValue:'提交',
         subInfo: {
           id:'',
           openId:'',
@@ -137,7 +139,7 @@
     methods: {
       getDetail:function(id){
         //测试服务号
-        let url = "/wx/generator/reservation/info/" + id;
+        let url = "/renren-fast/generator/reservation/info/" + id;
         //延阳服务号
         //let url = "https://zzttt.xyz/renren-fast/generator/reservation/info/" + id;
         this.$http({
@@ -146,7 +148,8 @@
           params: {}
         }).then((res)=> {   
           console.log(res)       
-          if (res && res.code === 200) {
+          //if (res && res.code === 200) {
+          if (res && res.code === 0) {    
             this.subInfo = res.reservation
           }else{
             //console.log(1111)
@@ -157,12 +160,23 @@
         this.$router.back()
       },
       showDatePicker(){
+        let d = new Date(Date.now())
+        let year = d.getFullYear()
+        let month = d.getMonth() + 1
+        let date = d.getDate()
+        let hours = d.getHours()
+
         if (!this.datePicker) {
           let self = this
           this.datePicker = this.$createDatePicker({
             title: '选择预约时间',
-            value: new Date(),
-            columnCount: 6,
+            value: new Date(),            
+            //min: [year, 2, 30 , 8],
+            //max: [parseInt(year), parseInt(month), parseInt(day)+7 , 16],
+            min: new Date(Date.now() + 1*24*60*60*1000),
+            max: new Date(Date.now() + 7*24*60*60*1000),
+            //startColumn: 'hour',
+            columnCount: 4,
             onSelect: function (date) {
               self.subInfo.reservationTime = formatDate(date)
             }
@@ -220,34 +234,71 @@
         this.businesPicker.show()
       },
       submit(){
-        if (this.subInfo.realName && this.subInfo.realName !='' && this.subInfo.realName.trim != '') {
-          //测试服务号
-          let url = "/wx/generator/reservation/save"
-          //延阳服务号
-          //let url = "https://zzttt.xyz/renren-fast/generator/reservation/save"
-          this.$http.post(
-            url, 
-            {
-              'id':this.subInfo.id,
-              'wxuserId':this.subInfo.openId,
-              'realName': this.subInfo.realName,
-              'realPhone': this.subInfo.realPhone,
-              'business': this.subInfo.business.toString(),
-              'reservationTime': this.subInfo.reservationTime.toString(),
-              'reservationBranch': this.subInfo.reservationBranch.toString(),
-              'remark': this.subInfo.remark
-            }
-            ).then((res)=> {
-              //console.log(res);
-              if (res && res.code === 200) {
-                this.$router.push({name: 'SubscribeDetail', query: {id: this.subInfo.id}})
-              }else{
-                alert('服务器繁忙，请稍后再试!')
-              }              
-          });        
-        }else{
-          alert('请输入预约信息！')
+
+        if (!this.subInfo.realName || !this.subInfo.realName.trim || !this.subInfo.reservationTime
+                || !this.subInfo.realPhone || !this.subInfo.business || !this.subInfo.reservationBranch) {
+          this.$createDialog({
+            type: 'alert',
+            //title: '我是标题',
+            content: '请输入预约信息！',
+            icon: 'cubeic-alert'
+          }).show()
+          return
         }
+
+        let d = new Date(this.subInfo.reservationTime.toString())        
+        let hours = d.getHours()     
+        if(hours < 9 || hours > 16){
+          this.$createDialog({
+            type: 'alert',
+            //title: '我是标题',
+            content: '请在预约时间范围内（早上9点至下午4点）选择，谢谢！',
+            icon: 'cubeic-alert'
+          }).show()
+          return
+        }
+
+        this.isDisable=true
+        this.buttonValue='正在提交请稍后... ...'
+        setTimeout(()=>{
+           this.isDisable=false   //点击一次时隔10秒后才能再次点击
+           this.buttonValue='提交'
+        },10000)
+
+        //if (this.subInfo.realName && this.subInfo.realName !='' && this.subInfo.realName.trim != '') {
+        //测试服务号
+        let url = "/renren-fast/generator/reservation/save"
+        //延阳服务号
+        //let url = "https://zzttt.xyz/renren-fast/generator/reservation/save"
+        this.$http.post(
+          url, 
+          {
+            'id':this.subInfo.id,
+            'wxuserId':this.subInfo.openId,
+            'realName': this.subInfo.realName,
+            'realPhone': this.subInfo.realPhone,
+            'business': this.subInfo.business.toString(),
+            'reservationTime': this.subInfo.reservationTime.toString(),
+            'reservationBranch': this.subInfo.reservationBranch.toString(),
+            'remark': this.subInfo.remark
+          }
+          ).then((res)=> {
+            //console.log(res);
+            //if (res && res.code === 200) {
+            if (res && res.code === 0) {    
+              this.$router.push({name: 'SubscribeDetail', query: {id: this.subInfo.id}})
+            }else{
+              this.$createDialog({
+                type: 'alert',
+                //title: '我是标题',
+                content: '服务器繁忙，请稍后再试!',
+                icon: 'cubeic-alert'
+              }).show()  
+            }              
+        });        
+        // }else{
+        //   alert('请输入预约信息！')
+        // }
       }
     },
     created: function () {

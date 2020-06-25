@@ -46,7 +46,7 @@ export default {
     onOver() {
       this.openId = this.$route.query.openId
       this.prizeName = this.listData[this.targetIndex].name
-      alert(this.listData[this.targetIndex].name)
+      //alert(this.listData[this.targetIndex].name)
       this.saveprize()
     },
     go(event) {
@@ -60,7 +60,7 @@ export default {
       }, 200);
     },
     saveprize(){
-      let url = "/wx/generator/userprize/save"
+      let url = "/renren-fast/generator/userprize/save"
       this.$http.post(
           url,
           {
@@ -70,10 +70,16 @@ export default {
           }
       ).then((res)=> {
         //console.log(res);
-        if (res && res.code === 200) {
+        //if (res && res.code === 200) { //直连全接口url方式返回200
+        if (res && res.code === 0) {    //代理接口ip:端口号模式返回0
           
         } else {
-          alert('服务器繁忙，请稍后再试!')
+            this.$createDialog({
+              type: 'alert',
+              //title: '我是标题',
+              content: '服务器繁忙，请稍后再试!',
+              icon: 'cubeic-alert'
+            }).show()  
         }
       });
     }
